@@ -38,6 +38,7 @@ runs:
           --node-count ${{ inputs.node_count }} \
           --node-size ${{ inputs.node_size }} \
           --networking cni \
+          --set spec.kubeAPIServer.anonymousAuth=true \
           --set spec.networking.subnets[0].cidr=10.16.0.0/16 \
           --yes
 
