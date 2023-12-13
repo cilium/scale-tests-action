@@ -40,6 +40,7 @@ runs:
           --networking cni \
           --set spec.kubeAPIServer.anonymousAuth=true \
           --set spec.networking.subnets[0].cidr=10.16.0.0/16 \
+          --set spec.etcdClusters[0].manager.listenMetricsURLs=http://localhost:2382 \
           --yes
 
     - name: Dump cluster config
