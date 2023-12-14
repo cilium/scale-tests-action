@@ -41,6 +41,14 @@ runs:
           --set spec.kubeAPIServer.anonymousAuth=true \
           --set spec.networking.subnets[0].cidr=10.16.0.0/16 \
           --set spec.etcdClusters[0].manager.listenMetricsURLs=http://localhost:2382 \
+          --set spec.kubeAPIServer.enableContentionProfiling=true \
+          --set spec.kubeAPIServer.enableProfiling=true \
+          --set spec.kubeControllerManager.enableContentionProfiling=true \
+          --set spec.kubeControllerManager.enableProfiling=true \
+          --set spec.kubeScheduler.enableContentionProfiling=true \
+          --set spec.kubeScheduler.enableProfiling=true \
+          --set spec.kubeScheduler.authorizationAlwaysAllowPaths=/metrics \
+          --set spec.kubeScheduler.authorizationAlwaysAllowPaths=/healthz \
           --yes
 
     - name: Dump cluster config
