@@ -4,6 +4,7 @@ inputs:
   release_version:
     description: "version of kops"
     required: true
+    # renovate: datasource=github-releases depName=kubernetes/kops
     default: "v1.29.0-alpha.2"
 runs:
   using: "composite"
