@@ -1,0 +1,61 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":gitSignOff",
+    "helpers:pinGitHubActionDigests"
+  ],
+  // This ensures that the gitAuthor and gitSignOff fields match
+  "gitAuthor": "renovate[bot] <bot@renovateapp.com>",
+  "includePaths": [
+    "**/action.yaml"
+  ],
+  "pinDigests": true,
+  "ignorePresets": [":prHourlyLimit2"],
+  "separateMajorMinor": true,
+  "separateMultipleMajor": true,
+  "separateMinorPatch": true,
+  "pruneStaleBranches": true,
+  "baseBranches": [
+    "main"
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true
+  },
+  "labels": [
+    "dependencies",
+    "renovate/stop-updating"
+  ],
+  "stopUpdatingLabel": "renovate/stop-updating",
+  "packageRules": [
+    {
+      "groupName": "all github action dependencies",
+      "groupSlug": "all-github-action",
+      "matchFileNames": [
+        "**/action.yaml"
+      ],
+      "matchUpdateTypes": [
+        "major",
+        "minor",
+        "digest",
+        "patch",
+        "pin",
+        "pinDigest"
+      ]
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "action\\.yaml$",
+      ],
+      // This regex manages version strings in GitHub actions files,
+      // similar to the examples shown here:
+      //   https://docs.renovatebot.com/modules/manager/regex/#advanced-capture
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s+.+default: \"(?<currentValue>.*)\""
+      ]
+    }
+  ]
+}
