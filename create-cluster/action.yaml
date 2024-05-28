@@ -56,6 +56,14 @@ runs:
           --set spec.kubeScheduler.authorizationAlwaysAllowPaths=/metrics \
           --set spec.kubeScheduler.authorizationAlwaysAllowPaths=/healthz \
           --set spec.kubeProxy.enabled=${{ inputs.kube_proxy_enabled }} \
+          --set spec.kubeAPIServer.maxRequestsInflight=800 \
+          --set spec.kubeAPIServer.maxMutatingRequestsInflight=400 \
+          --set spec.kubeControllerManager.endpointUpdatesBatchPeriod=500ms \
+          --set spec.kubeControllerManager.endpointSliceUpdatesBatchPeriod=500ms \
+          --set spec.kubeControllerManager.kubeAPIQPS=100 \
+          --set spec.kubeControllerManager.kubeAPIBurst=100 \
+          --set spec.kubeScheduler.kubeAPIQPS=500 \
+          --set spec.kubeScheduler.kubeAPIBurst=500 \
           --yes
 
     - name: Dump cluster config
