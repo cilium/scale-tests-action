@@ -65,6 +65,7 @@ runs:
           --set spec.kubeControllerManager.kubeAPIBurst=100 \
           --set spec.kubeScheduler.kubeAPIQPS=500 \
           --set spec.kubeScheduler.kubeAPIBurst=500 \
+          --set spec.kubeProxy.enabled=false \
           --yes
 
     - name: Dump cluster config
