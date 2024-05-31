@@ -10,6 +10,9 @@ inputs:
   control_plane_count:
     description: "Number of control plane nodes"
     required: true
+  control_plane_volume_size:
+    description: "Size of the root volume deployed for control plane nodes"
+    default: "50"
   node_size:
     description: "Node size"
     required: true
@@ -19,6 +22,9 @@ inputs:
   node_cidr:
     description: "The set of IP addresses assigned to nodes"
     default: "10.16.0.0/16"
+  node_volume_size:
+    description: "Size of the root volume deployed for nodes"
+    default: "50"
   kops_state:
     description: "Bucket where to store kops state"
     required: true
@@ -41,8 +47,10 @@ runs:
           --project=${{ inputs.project_id }} \
           --control-plane-count ${{ inputs.control_plane_count }} \
           --control-plane-size ${{ inputs.control_plane_size }} \
+          --control-plane-volume-size ${{ inputs.control_plane_volume_size }} \
           --node-count ${{ inputs.node_count }} \
           --node-size ${{ inputs.node_size }} \
+          --node-volume-size ${{ inputs.node_volume_size }} \
           --networking cni \
           --set spec.kubeAPIServer.anonymousAuth=true \
           --set spec.networking.subnets[0].cidr=${{ inputs.node_cidr }} \
