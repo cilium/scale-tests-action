@@ -24,5 +24,7 @@ runs:
         # BUILD_ID needs to be an integer
         BUILD_ID="$(date +%s)"
         EXPORT_DIR="${{ inputs.results_bucket }}/logs/${{ inputs.test_name }}-${{ github.ref_name }}/${BUILD_ID}"
+        echo "::notice::BUILD_ID: $BUILD_ID"
+        echo "::notice::EXPORT_DIR: $EXPORT_DIR"
         gsutil -m cp -R ${{ inputs.artifacts }} $EXPORT_DIR/artifacts/
         gsutil -m cp sha.txt run-url.txt ${{ inputs.other_files }} $EXPORT_DIR/
