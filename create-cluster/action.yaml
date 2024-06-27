@@ -63,6 +63,7 @@ runs:
           --set spec.kubeControllerManager.endpointSliceUpdatesBatchPeriod=500ms \
           --set spec.kubeControllerManager.kubeAPIQPS=100 \
           --set spec.kubeControllerManager.kubeAPIBurst=100 \
+          --set spec.kubeControllerManager.allocateNodeCIDRs=false \
           --set spec.kubeScheduler.kubeAPIQPS=500 \
           --set spec.kubeScheduler.kubeAPIBurst=500 \
           --set spec.kubeProxy.enabled=false \
