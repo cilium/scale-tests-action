@@ -16,6 +16,9 @@ inputs:
   node_count:
     description: "Number of nodes"
     required: true
+  node_cidr:
+    description: "The set of IP addresses assigned to nodes"
+    default: "10.16.0.0/16"
   kops_state:
     description: "Bucket where to store kops state"
     required: true
@@ -42,7 +45,7 @@ runs:
           --node-size ${{ inputs.node_size }} \
           --networking cni \
           --set spec.kubeAPIServer.anonymousAuth=true \
-          --set spec.networking.subnets[0].cidr=10.16.0.0/16 \
+          --set spec.networking.subnets[0].cidr=${{ inputs.node_cidr }} \
           --set spec.etcdClusters[0].manager.listenMetricsURLs=http://localhost:2382 \
           --set spec.kubeAPIServer.enableContentionProfiling=true \
           --set spec.kubeAPIServer.enableProfiling=true \
