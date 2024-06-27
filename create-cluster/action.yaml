@@ -22,6 +22,9 @@ inputs:
   project_id:
     description: "GCP Project in which to create cluster"
     required: true
+  kube_proxy_enabled:
+    description: "Whether to enable the deployment of Kube Proxy"
+    default: "true"
 runs:
   using: "composite"
   steps:
@@ -49,6 +52,7 @@ runs:
           --set spec.kubeScheduler.enableProfiling=true \
           --set spec.kubeScheduler.authorizationAlwaysAllowPaths=/metrics \
           --set spec.kubeScheduler.authorizationAlwaysAllowPaths=/healthz \
+          --set spec.kubeProxy.enabled=${{ inputs.kube_proxy_enabled }} \
           --yes
 
     - name: Dump cluster config
