@@ -10,11 +10,17 @@ inputs:
   control_plane_count:
     description: "Number of control plane nodes"
     required: true
+  control_plane_volume_size:
+    description: "Size of the root volume deployed for control plane nodes"
+    required: true
   node_size:
     description: "Node size"
     required: true
   node_count:
     description: "Number of nodes"
+    required: true
+  node_volume_size:
+    description: "Size of the root volume deployed for nodes"
     required: true
   kops_state:
     description: "Bucket where to store kops state"
@@ -35,8 +41,10 @@ runs:
           --project=${{ inputs.project_id }} \
           --control-plane-count ${{ inputs.control_plane_count }} \
           --control-plane-size ${{ inputs.control_plane_size }} \
+          --control-plane-volume-size ${{ inputs.control_plane_volume_size }} \
           --node-count ${{ inputs.node_count }} \
           --node-size ${{ inputs.node_size }} \
+          --node-volume-size ${{ inputs.node_volume_size }} \
           --networking cni \
           --set spec.kubeAPIServer.anonymousAuth=true \
           --set spec.networking.subnets[0].cidr=10.16.0.0/16 \
@@ -49,6 +57,16 @@ runs:
           --set spec.kubeScheduler.enableProfiling=true \
           --set spec.kubeScheduler.authorizationAlwaysAllowPaths=/metrics \
           --set spec.kubeScheduler.authorizationAlwaysAllowPaths=/healthz \
+          --set spec.kubeAPIServer.maxRequestsInflight=800 \
+          --set spec.kubeAPIServer.maxMutatingRequestsInflight=400 \
+          --set spec.kubeControllerManager.endpointUpdatesBatchPeriod=500ms \
+          --set spec.kubeControllerManager.endpointSliceUpdatesBatchPeriod=500ms \
+          --set spec.kubeControllerManager.kubeAPIQPS=100 \
+          --set spec.kubeControllerManager.kubeAPIBurst=100 \
+          --set spec.kubeControllerManager.allocateNodeCIDRs=false \
+          --set spec.kubeScheduler.kubeAPIQPS=500 \
+          --set spec.kubeScheduler.kubeAPIBurst=500 \
+          --set spec.kubeProxy.enabled=false \
           --yes
 
     - name: Dump cluster config
