@@ -16,6 +16,9 @@ inputs:
   ig_name:
     description: "Name of instanceGroup"
     required: true
+  node_volume_size:
+    description: "Size of the root volume deployed for nodes"
+    default: "50"
 runs:
   using: "composite"
   steps:
@@ -39,6 +42,7 @@ runs:
             --set spec.maxSize=${{ inputs.node_count }} \
             --set spec.minSize=${{ inputs.node_count }} \
             --set spec.machineType=${{ inputs.node_size }} \
+            --set spec.rootVolume.size=${{ inputs.node_volume_size }} \
             --unset spec.zones \
             --set spec.zones=us-west1-a
 
