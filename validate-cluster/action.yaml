@@ -7,6 +7,9 @@ inputs:
   kops_state:
     description: "Bucket with kops state"
     required: true
+  timeout:
+    description: "Maximum time to wait for cluster to be ready"
+    default: "20m"
 runs:
   using: "composite"
   steps:
@@ -16,5 +19,5 @@ runs:
         ./kops validate cluster \
           ${{ inputs.cluster_name }} \
           --state ${{ inputs.kops_state }} \
-          --wait 20m \
+          --wait ${{ inputs.timeout }} \
           --count 3
