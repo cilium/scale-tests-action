@@ -58,6 +58,8 @@ runs:
           --set spec.kubeAPIServer.anonymousAuth=true \
           --set spec.networking.subnets[0].cidr=${{ inputs.node_cidr }} \
           --set spec.etcdClusters[0].manager.listenMetricsURLs=http://localhost:2382 \
+          --set spec.etcdClusters[*].etcdMembers[*].volumeSize=50 \
+          --set spec.etcdClusters[*].manager.env=ETCD_QUOTA_BACKEND_BYTES=8589934592 \
           --set spec.kubeAPIServer.enableContentionProfiling=true \
           --set spec.kubeAPIServer.enableProfiling=true \
           --set spec.kubeControllerManager.enableContentionProfiling=true \
