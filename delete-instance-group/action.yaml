@@ -1,0 +1,23 @@
+name: "Delete instance group"
+description: "Workflow that deletes a kops instance group"
+inputs:
+  instance_group_name:
+    description: "Name of the instance group to delete"
+    required: true
+  kops_state:
+    description: "Bucket with kops state"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Delete instance group with retry
+      uses: nick-fields/retry@7152eba30c6575329ac0576536151aca5a72780e # v3.0.0
+      with:
+        timeout_minutes: 30
+        max_attempts: 10
+        polling_interval_seconds: 120
+        command: |
+          ./kops delete instancegroup \
+            ${{ inputs.instance_group_name }} \
+            --state ${{ inputs.kops_state }} \
+            --yes
