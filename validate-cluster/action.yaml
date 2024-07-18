@@ -10,6 +10,9 @@ inputs:
   timeout:
     description: "Maximum time to wait for cluster to be ready"
     default: "20m"
+  interval:
+    description: "Time to wait between validation attempts"
+    default: "60s"
 runs:
   using: "composite"
   steps:
@@ -20,4 +23,5 @@ runs:
           ${{ inputs.cluster_name }} \
           --state ${{ inputs.kops_state }} \
           --wait ${{ inputs.timeout }} \
+          --interval ${{ inputs.interval }} \
           --count 3
