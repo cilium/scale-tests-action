@@ -40,6 +40,9 @@ inputs:
   etcd_volume_size:
     description: "Size of the volumes deployed for the etcd clusters"
     default: "50"
+  max_in_flight:
+    description: "Maximum in-flight requests for kube-apiserver"
+    default: "100"
 runs:
   using: "composite"
   steps:
@@ -72,8 +75,8 @@ runs:
           --set spec.kubeScheduler.authorizationAlwaysAllowPaths=/metrics \
           --set spec.kubeScheduler.authorizationAlwaysAllowPaths=/healthz \
           --set spec.kubeProxy.enabled=${{ inputs.kube_proxy_enabled }} \
-          --set spec.kubeAPIServer.maxRequestsInflight=800 \
-          --set spec.kubeAPIServer.maxMutatingRequestsInflight=400 \
+          --set spec.kubeAPIServer.maxRequestsInflight=${{ inputs.max_in_flight }} \
+          --set spec.kubeAPIServer.maxMutatingRequestsInflight=100 \
           --set spec.kubeControllerManager.endpointUpdatesBatchPeriod=500ms \
           --set spec.kubeControllerManager.endpointSliceUpdatesBatchPeriod=500ms \
           --set spec.kubeControllerManager.kubeAPIQPS=100 \
