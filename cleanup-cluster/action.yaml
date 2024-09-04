@@ -10,6 +10,20 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Delete custom firewall rules
+      uses: nick-fields/retry@7152eba30c6575329ac0576536151aca5a72780e # v3.0.0
+      with:
+        timeout_minutes: 30
+        max_attempts: 10
+        polling_interval_seconds: 120
+        command: |
+          NAME="pod-cidrs-to-node-${{ inputs.cluster_name }}"
+          NAME="${NAME//./-}"
+
+          if gcloud compute firewall-rules describe ${NAME} >/dev/null 2>&1; then
+            gcloud compute firewall-rules delete ${NAME} --quiet
+          fi
+
     - name: Delete cluster
       uses: nick-fields/retry@7152eba30c6575329ac0576536151aca5a72780e # v3.0.0
       with:

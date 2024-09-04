@@ -21,3 +21,24 @@ runs:
         # matches the rules used by kops to manage cp-to-node and node-to-node
         # traffic, and is an acceptable risk since the cluster is ephemeral and not
         # running in prod.
+
+    - name: Create custom firewall rule for native routing traffic
+      shell: bash
+      run: |
+        # Required to allow pod to remote pod/node traffic when Cilium
+        # is configured in native routing mode (100.96.0.0/11 is the default
+        # PodCIDR range configured by kops in kube-controller-manager).
+        # Mimics the rule created by kops when configured with GCP networking:
+        # https://github.com/kubernetes/kops/blob/v1.29.2/pkg/model/gcemodel/firewall.go#L160-L182
+        # Note that any changes to the rule name must be reflected in the
+        # corresponding step part of the cleanup-cluster action.
+        NETWORK="${{ inputs.cluster_name }}"
+        NETWORK="${NETWORK//./-}"
+
+        gcloud compute firewall-rules create \
+          pod-cidrs-to-node-${NETWORK} \
+          --allow tcp,udp,icmp,esp,ah,sctp \
+          --network=${NETWORK} \
+          --direction=INGRESS \
+          --allow=tcp,udp,icmp,esp,ah,sctp \
+          --source-ranges=100.96.0.0/11
