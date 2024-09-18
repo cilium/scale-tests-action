@@ -4,6 +4,10 @@ inputs:
   cluster_name:
     description: "Name of the target cluster to adjust to rules for"
     required: true
+  create_native_routing_firewall:
+    description: "Whether to create a custom firewall rule for native routing traffic"
+    default: 'true'
+    required: false
 runs:
   using: "composite"
   steps:
@@ -23,6 +27,7 @@ runs:
         # running in prod.
 
     - name: Create custom firewall rule for native routing traffic
+      if: ${{ inputs.create_native_routing_firewall == 'true' }}
       shell: bash
       run: |
         # Required to allow pod to remote pod/node traffic when Cilium
