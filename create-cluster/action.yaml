@@ -19,8 +19,8 @@ inputs:
   node_count:
     description: "Number of nodes"
     required: true
-  allocate_node_cidrs:
-    description: "Whether to enable KCM to allocate per-node CIDRs. If enabled, CIDRs will be allocated from those provided in `node_cidr`"
+  sync_cloud_routes:
+    description: "Whether to enable synchronization of cloud routes"
     default: "true"
   node_cidr:
     description: "The set of IP addresses assigned to nodes"
@@ -81,7 +81,9 @@ runs:
           --set spec.kubeControllerManager.endpointSliceUpdatesBatchPeriod=500ms \
           --set spec.kubeControllerManager.kubeAPIQPS=100 \
           --set spec.kubeControllerManager.kubeAPIBurst=100 \
-          --set spec.kubeControllerManager.allocateNodeCIDRs=${{ inputs.allocate_node_cidrs }} \
+          --set spec.kubeControllerManager.configureCloudRoutes=${{ inputs.sync_cloud_routes }} \
+          --set spec.cloudControllerManager.configureCloudRoutes=${{ inputs.sync_cloud_routes }} \
+          --set spec.cloudControllerManager.concurrentNodeSyncs=10 \
           --set spec.kubeScheduler.kubeAPIQPS=500 \
           --set spec.kubeScheduler.kubeAPIBurst=500 \
           --yes
