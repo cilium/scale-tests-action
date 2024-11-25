@@ -43,13 +43,20 @@ inputs:
   max_in_flight:
     description: "Maximum in-flight requests for kube-apiserver"
     default: "100"
+  image:
+    description: "Machine image for all instances"
 runs:
   using: "composite"
   steps:
     - name: Create cluster
       shell: bash
       run: |
-        ./kops create cluster \
+        IMG_ARG=""
+        if [ "${{ inputs.image }}" != "" ]; then
+          IMG_ARG=" --image=${{ inputs.image }}"
+        fi
+
+        CMD="./kops create cluster \
           ${{ inputs.cluster_name }} \
           --state ${{ inputs.kops_state }} \
           --zones us-west1-a \
@@ -86,7 +93,9 @@ runs:
           --set spec.cloudControllerManager.concurrentNodeSyncs=10 \
           --set spec.kubeScheduler.kubeAPIQPS=500 \
           --set spec.kubeScheduler.kubeAPIBurst=500 \
-          --yes
+          --yes"
+
+        eval "$CMD $IMG_ARG"
 
     - name: Dump cluster config
       shell: bash
