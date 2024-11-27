@@ -26,5 +26,11 @@ runs:
         EXPORT_DIR="${{ inputs.results_bucket }}/logs/${{ inputs.test_name }}-${{ github.ref_name }}/${BUILD_ID}"
         echo "::notice::BUILD_ID: $BUILD_ID"
         echo "::notice::EXPORT_DIR: $EXPORT_DIR"
+        set +e
         gsutil -m cp -R ${{ inputs.artifacts }} $EXPORT_DIR/artifacts/
+        artifact_status=$?
         gsutil -m cp sha.txt run-url.txt ${{ inputs.other_files }} $EXPORT_DIR/
+        other_files_status=$?
+        if [ $artifact_status -ne 0 ] || [ $other_files_status -ne 0 ]; then
+          exit 1
+        fi
