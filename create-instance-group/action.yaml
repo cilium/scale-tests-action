@@ -38,6 +38,7 @@ runs:
           # and guaranteed to be what we set it to.
           # Otherwise, the value given will be appended to the zone list.
           ./kops edit ig ${{ inputs.ig_name }} \
+            --name ${{ inputs.cluster_name }} \
             --state ${{ inputs.kops_state }} \
             --set spec.maxSize=${{ inputs.node_count }} \
             --set spec.minSize=${{ inputs.node_count }} \
@@ -50,6 +51,7 @@ runs:
       shell: bash
       run: |
           ./kops get instancegroups ${{ inputs.ig_name }} \
+            --name ${{ inputs.cluster_name }} \
             --state ${{ inputs.kops_state }} \
             -o yaml
 
