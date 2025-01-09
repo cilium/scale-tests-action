@@ -48,6 +48,7 @@ runs:
             --set spec.machineType=${{ inputs.node_size }} \
             --set spec.rootVolume.type=${{ inputs.node_volume_type }} \
             --set spec.rootVolume.size=${{ inputs.node_volume_size }} \
+            --set spec.associatePublicIP=false \
             --unset spec.zones \
             --set spec.zones=us-west1-a
 
