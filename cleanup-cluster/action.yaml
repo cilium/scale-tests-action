@@ -17,7 +17,7 @@ runs:
         max_attempts: 10
         polling_interval_seconds: 120
         command: |
-          NAME="pod-cidrs-to-node-${{ inputs.cluster_name }}"
+          NAME="pods-to-node-${{ inputs.cluster_name }}"
           NAME="${NAME//./-}"
 
           if gcloud compute firewall-rules describe ${NAME} >/dev/null 2>&1; then
