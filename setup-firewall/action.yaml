@@ -41,7 +41,7 @@ runs:
         NETWORK="${NETWORK//./-}"
 
         gcloud compute firewall-rules create \
-          pod-cidrs-to-node-${NETWORK} \
+          pods-to-node-${NETWORK} \
           --allow tcp,udp,icmp,esp,ah,sctp \
           --network=${NETWORK} \
           --direction=INGRESS \
