@@ -92,7 +92,6 @@ runs:
           --set spec.kubeControllerManager.configureCloudRoutes=${{ inputs.sync_cloud_routes }} \
           --set spec.cloudControllerManager.configureCloudRoutes=${{ inputs.sync_cloud_routes }} \
           --set spec.cloudControllerManager.concurrentNodeSyncs=10 \
-          --set spec.cloudControllerManager.image=gcr.io/k8s-staging-cloud-provider-gcp/cloud-controller-manager:v32.2.4 \
           --set spec.kubeScheduler.kubeAPIQPS=500 \
           --set spec.kubeScheduler.kubeAPIBurst=500 \
           --yes"
