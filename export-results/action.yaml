@@ -22,6 +22,33 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Show results as GitHub Summary
+      shell: bash
+      run: |
+        files=(${{ inputs.artifacts }}/GenericPrometheusQuery*.json)
+
+        declare -A summaries
+        for file in "${files[@]}"; do
+            base=$(basename "$file")
+            test_name=$(echo "$base" | awk -F'_' '{print $(NF-1)}')
+            clean_name=$(echo "$base" | sed -E 's/^GenericPrometheusQuery //; s/_[0-9TZ:-]+\.json$//; s/_/ /g')
+            json_content=$(<"$file")
+
+            summaries["$test_name"]+=$'### '"$clean_name"$'\n'
+            summaries["$test_name"]+=$'\n'
+            summaries["$test_name"]+=$'```\n'
+            summaries["$test_name"]+="$json_content"
+            summaries["$test_name"]+=$'\n```\n\n'
+        done
+
+        for test_name in $(printf "%s\n" "${!summaries[@]}" | sort); do
+            {
+                echo -e "## $test_name\n"
+                echo -n "${summaries[$test_name]}"
+                echo ""
+            } >> $GITHUB_STEP_SUMMARY
+        done
+
     - name: Export Results
       shell: bash
       run: |
@@ -33,7 +60,7 @@ runs:
         echo "::notice::BUILD_ID: $BUILD_ID"
         echo "::notice::EXPORT_DIR: $EXPORT_DIR"
         set +e
-        gsutil -m cp -R ${{ inputs.artifacts }} $EXPORT_DIR/artifacts/
+        gsutil -m cp -R ${{ inputs.artifacts }}/* $EXPORT_DIR/artifacts/
         artifact_status=$?
         gsutil -m cp tested_version.txt run-url.txt ${{ inputs.other_files }} $EXPORT_DIR/
         other_files_status=$?
