@@ -13,6 +13,12 @@ inputs:
   test_name:
     description: "Name of the test"
     required: true
+  tested_version:
+    description: "Version of the tested software, takes precedence over tested_sha"
+    required: false
+  tested_sha:
+    description: "SHA of the tested software"
+    required: false
 runs:
   using: "composite"
   steps:
@@ -20,16 +26,16 @@ runs:
       shell: bash
       run: |
         echo ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} >> ./run-url.txt
-        echo ${{ github.sha }} >> sha.txt
+        echo ${{ inputs.tested_version || inputs.tested_sha }} >> tested_version.txt
         # BUILD_ID needs to be an integer
         BUILD_ID="$(date +%s)"
-        EXPORT_DIR="${{ inputs.results_bucket }}/logs/${{ inputs.test_name }}-${{ github.ref_name }}/${BUILD_ID}"
+        EXPORT_DIR="${{ inputs.results_bucket }}/logs/${{ inputs.test_name }}-${{ inputs.tested_version || github.ref_name }}/${BUILD_ID}"
         echo "::notice::BUILD_ID: $BUILD_ID"
         echo "::notice::EXPORT_DIR: $EXPORT_DIR"
         set +e
         gsutil -m cp -R ${{ inputs.artifacts }} $EXPORT_DIR/artifacts/
         artifact_status=$?
-        gsutil -m cp sha.txt run-url.txt ${{ inputs.other_files }} $EXPORT_DIR/
+        gsutil -m cp tested_version.txt run-url.txt ${{ inputs.other_files }} $EXPORT_DIR/
         other_files_status=$?
         if [ $artifact_status -ne 0 ] || [ $other_files_status -ne 0 ]; then
           exit 1
