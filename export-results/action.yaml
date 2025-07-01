@@ -19,35 +19,41 @@ inputs:
   tested_sha:
     description: "SHA of the tested software"
     required: false
+  results_regex:
+    description: "Regex to filter results for summary"
+    required: false
+    default: "GenericPrometheusQuery*.json"
 runs:
   using: "composite"
   steps:
     - name: Show results as GitHub Summary
       shell: bash
       run: |
-        files=(${{ inputs.artifacts }}/GenericPrometheusQuery*.json)
+        if [[ -n "${{ inputs.results_regex }}" ]]; then
+          files=(${{ inputs.artifacts }}${{ inputs.results_regex }})
 
-        declare -A summaries
-        for file in "${files[@]}"; do
-            base=$(basename "$file")
-            test_name=$(echo "$base" | awk -F'_' '{print $(NF-1)}')
-            clean_name=$(echo "$base" | sed -E 's/^GenericPrometheusQuery //; s/_[0-9TZ:-]+\.json$//; s/_/ /g')
-            json_content=$(<"$file")
+          declare -A summaries
+          for file in "${files[@]}"; do
+              base=$(basename "$file")
+              test_name=$(echo "$base" | awk -F'_' '{print $(NF-1)}')
+              clean_name=$(echo "$base" | sed -E 's/^GenericPrometheusQuery //; s/_[0-9TZ:-]+\.json$//; s/_/ /g')
+              json_content=$(<"$file")
 
-            summaries["$test_name"]+=$'### '"$clean_name"$'\n'
-            summaries["$test_name"]+=$'\n'
-            summaries["$test_name"]+=$'```\n'
-            summaries["$test_name"]+="$json_content"
-            summaries["$test_name"]+=$'\n```\n\n'
-        done
+              summaries["$test_name"]+=$'### '"$clean_name"$'\n'
+              summaries["$test_name"]+=$'\n'
+              summaries["$test_name"]+=$'```\n'
+              summaries["$test_name"]+="$json_content"
+              summaries["$test_name"]+=$'\n```\n\n'
+          done
 
-        for test_name in $(printf "%s\n" "${!summaries[@]}" | sort); do
-            {
-                echo -e "## $test_name\n"
-                echo -n "${summaries[$test_name]}"
-                echo ""
-            } >> $GITHUB_STEP_SUMMARY
-        done
+          for test_name in $(printf "%s\n" "${!summaries[@]}" | sort); do
+              {
+                  echo -e "## $test_name\n"
+                  echo -n "${summaries[$test_name]}"
+                  echo ""
+              } >> $GITHUB_STEP_SUMMARY
+          done
+        fi
 
     - name: Export Results
       shell: bash
