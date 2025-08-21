@@ -126,3 +126,22 @@ runs:
       shell: bash
       run: |
         until kubectl get nodes; do sleep 45s; done
+
+    # Issue: https://github.com/cilium/cilium/issues/41313
+    - name: Hack until kops fixes their issue
+      shell: bash
+      run: |
+        cat <<EOF | kubectl apply -f -
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: coredns-autoscaler
+          namespace: kube-system
+        data:
+          linear: |-
+            {
+              "coresPerReplica": 256,
+              "nodesPerReplica": 16,
+              "preventSinglePointFailure": false,
+            }
+        EOF
