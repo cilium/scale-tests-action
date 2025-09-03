@@ -39,7 +39,7 @@ inputs:
     default: "true"
   etcd_volume_size:
     description: "Size of the volumes deployed for the etcd clusters"
-    default: "50"
+    default: "200"
   max_in_flight:
     description: "Maximum in-flight requests for kube-apiserver"
     default: "100"
